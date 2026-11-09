@@ -1,0 +1,13 @@
+# Local clasp configuration
+.clasp.json
+
+# Authentication and credentials
+.clasprc.json
+.clasprc
+
+# Dependencies
+node_modules/
+
+# Environment variables and secrets
+.env
+.env.*

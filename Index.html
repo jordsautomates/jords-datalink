@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+</head>
+<style>
+  <?!= include('Styles'); ?>
+</style>
+<body>
+  <div class="app">
+
+    <aside class="sidebar">
+      <div class="brand">
+  <div class="brand-icon">D</div>
+  <div class="brand-text">
+    <div class="brand-name">DataLink<span>.</span></div>
+    <div class="brand-subtitle">Jords | Automates</div>
+  </div>
+</div>
+
+      <div class="nav-label">WORKSPACE</div>
+      <div class="nav-item active">▦ &nbsp; Dashboard</div>
+      <div class="nav-item">⌘ &nbsp; My Workflows</div>
+      <div class="nav-item" onclick="createWorkflow()">
+  ＋ &nbsp; Create Workflow
+</div>
+
+      <div class="nav-label">CONFIGURATION</div>
+      <div class="nav-item">⚙ &nbsp; Connections</div>
+      <div class="nav-item">▤ &nbsp; Data Fields</div>
+      <div class="nav-item">◷ &nbsp; Activity Logs</div>
+
+      <div class="nav-label">ACCOUNT</div>
+      <div class="nav-item">⚙ &nbsp; Settings</div>
+    </aside>
+
+    <main class="main">
+<section id="workflowBuilder" style="display: none;">
+
+  <div class="topbar">
+    <div class="breadcrumb">Workspace / Create Workflow</div>
+    <div class="status">● NEW WORKFLOW</div>
+  </div>
+
+  <h1>Create a workflow.</h1>
+
+  <div class="description">
+    Set up your automation before connecting your data source and destination.
+  </div>
+
+  <div class="workflow-card">
+
+    <div class="section-title">01 — Workflow details</div>
+
+    <div class="workflow-description">
+      Give your automation a name and describe what it should accomplish.
+    </div>
+
+    <label for="workflowName">Workflow name</label>
+    <input
+      type="text"
+      id="workflowName"
+      placeholder="e.g. Telegram Inventory Reports"
+    >
+
+    <label for="workflowDescription">Description</label>
+    <textarea
+      id="workflowDescription"
+      placeholder="Describe what this automation will do."
+      rows="3"
+    ></textarea>
+
+    <div style="margin-top: 25px;">
+      <button class="secondary-button" onclick="backToDashboard()">
+        Cancel
+      </button>
+
+      <button class="primary-button" onclick="continueWorkflow()">
+        Continue →
+      </button>
+    </div>
+
+  </div>
+
+</section>
+<section id="dataSourceSetup" style="display: none;">
+
+  <div class="topbar">
+    <div class="breadcrumb">Workspace / Create Workflow / Data Source</div>
+    <div class="status">● STEP 02</div>
+  </div>
+
+  <h1>Where does your data come from?</h1>
+
+  <div class="description">
+    Select the application or service that will provide information
+    to your workflow.
+  </div>
+
+  <div class="workflow-card">
+
+    <div class="section-title">02 — Select your data source</div>
+
+    <div class="workflow-description">
+      Choose the platform where your incoming information originates.
+    </div>
+
+    <label class="source-option">
+      <input
+        type="radio"
+        name="dataSource"
+        value="TELEGRAM"
+        checked
+      >
+
+      <span>
+        <strong>Telegram</strong><br>
+        <small>Receive messages from a Telegram bot.</small>
+      </span>
+    </label>
+
+    <div style="margin-top: 30px;">
+
+      <button class="secondary-button" onclick="backToWorkflowDetails()">
+        ← Back
+      </button>
+
+      <button class="primary-button" onclick="continueToDataFields()">
+        Continue →
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+<section id="dataFieldsSetup" style="display: none;">
+  <div class="topbar">
+    <div class="breadcrumb">Workspace / Create Workflow / Data Fields</div>
+    <div class="status">● STEP 03</div>
+  </div>
+
+  <h1>What information do you want to capture?</h1>
+
+  <div class="description">
+    Define the data fields that Jords DataLink should extract
+    from incoming messages.
+  </div>
+
+  <div class="workflow-card">
+    <div class="section-title">03 — Define your data fields</div>
+
+    <div class="workflow-description">
+      Add the information you want to organize and send to your destination.
+    </div>
+
+    <label for="fieldName">Field name</label>
+    <input
+      type="text"
+      id="fieldName"
+      placeholder="e.g. Reference Number"
+    >
+
+    <label for="fieldType">Data type</label>
+    <select id="fieldType">
+      <option value="TEXT">Text</option>
+      <option value="NUMBER">Number</option>
+      <option value="DATE">Date</option>
+    </select>
+
+    <div style="margin-top: 20px;">
+      <button class="secondary-button" onclick="backToDataSource()">
+        ← Back
+      </button>
+
+      <button class="primary-button" onclick="addDataField()">
+        + Add Field
+      </button>
+    </div>
+
+    <div id="dataFieldsList" style="margin-top: 25px;">
+      <div class="empty-state">
+        No data fields added yet.
+      </div>
+    </div>
+
+    <div style="margin-top: 25px;">
+      <button class="primary-button" onclick="continueToDestination()">
+        Continue →
+      </button>
+      <div id="dataFieldsFeedback"
+     style="display:none; margin-top:15px; color:var(--green); font-size:13px;">
+</div>
+    </div>
+  </div>
+</section>
+<section id="destinationSetup" style="display: none;">
+
+  <div class="topbar">
+    <div class="breadcrumb">
+      Workspace / Create Workflow / Destination
+    </div>
+    <div class="status">● STEP 04</div>
+  </div>
+
+  <h1>Where should your data go?</h1>
+
+  <div class="description">
+    Choose where Jords DataLink will store or deliver your processed information.
+  </div>
+
+  <div class="workflow-card">
+
+    <div class="section-title">04 — Select your destination</div>
+
+    <div class="workflow-description">
+      Select the application or service that will receive your organized data.
+    </div>
+
+    <label class="source-option">
+      <input type="radio" name="dataDestination"
+             value="GOOGLE_SHEETS" checked>
+
+      <span>
+        <strong>Google Sheets</strong><br>
+        <small>Send organized records directly to a Google spreadsheet.</small>
+      </span>
+    </label>
+
+    <label class="source-option" style="opacity: 0.45;">
+      <input type="radio" disabled>
+      <span>
+        <strong>Database</strong><br>
+        <small>Database integration — coming soon.</small>
+      </span>
+    </label>
+
+    <label class="source-option" style="opacity: 0.45;">
+      <input type="radio" disabled>
+      <span>
+        <strong>API / Webhook</strong><br>
+        <small>External application integration — coming soon.</small>
+      </span>
+    </label>
+
+    <div style="margin-top: 30px;">
+      <button class="secondary-button"
+              onclick="backToDataFields()">
+        ← Back
+      </button>
+
+      <button class="primary-button"
+              onclick="continueFromDestination()">
+        Continue →
+      </button>
+    </div>
+
+  </div>
+</section>
+<section id="googleSheetsSetup" style="display: none;">
+
+  <div class="topbar">
+    <div class="breadcrumb">
+      Workspace / Create Workflow / Google Sheets
+    </div>
+    <div class="status">● STEP 05</div>
+  </div>
+
+  <h1>Set up your Google Sheets destination</h1>
+
+  <div class="description">
+    Choose a name for your spreadsheet. DataLink will create it
+    automatically and prepare the columns using your configured fields.
+  </div>
+
+  <div class="workflow-card">
+
+    <div class="section-title">05 — Create your spreadsheet</div>
+
+    <label for="spreadsheetName">Spreadsheet name</label>
+
+    <input
+      type="text"
+      id="spreadsheetName"
+      placeholder="e.g. Customer Records"
+    >
+
+    <div style="margin-top: 30px;">
+
+      <button class="secondary-button"
+              onclick="backToDestination()">
+        ← Back
+      </button>
+
+      <button class="primary-button"
+              onclick="createGoogleSpreadsheet()">
+        Create Spreadsheet →
+      </button>
+
+    </div>
+
+    <div id="googleSheetsFeedback"
+         style="display:none; margin-top:15px; color:var(--green); font-size:13px;">
+    </div>
+      <button
+          id="continueToTelegramButton"
+          class="primary-button"
+           style="display:none; margin-top:20px;"
+           onclick="openTelegramConfiguration()">
+  Continue to Telegram Configuration →
+</button>
+ 
+  </div>
+
+</section>
+
+<!-- STEP 06: TELEGRAM CONFIGURATION -->
+<section id="telegramConfigSetup" style="display: none;">
+
+  <div class="topbar">
+    <div class="breadcrumb">
+      Workspace / Create Workflow / Telegram Configuration
+    </div>
+    <div class="status">● STEP 06</div>
+  </div>
+
+  <h1>Configure your Telegram bot.</h1>
+
+  <div class="description">
+    Set the access password and basic message behavior for your workflow.
+  </div>
+
+  <div class="workflow-card">
+
+    <div class="section-title">06 — Telegram bot configuration</div>
+
+    <label for="telegramAccessPassword">Shared access password</label>
+    <input
+      type="password"
+      id="telegramAccessPassword"
+      placeholder="Create a password for authorized users"
+    >
+
+    <small>
+      All users will use this password the first time they access your bot.
+    </small>
+
+    <label for="telegramWelcomeMessage" style="margin-top: 25px;">
+      Welcome message
+    </label>
+
+    <textarea
+      id="telegramWelcomeMessage"
+      rows="3"
+      placeholder="Welcome! Please send your record."
+    ></textarea>
+
+    <div id="telegramConfigFeedback"
+         style="display:none; margin-top:15px; color:var(--green); font-size:13px;">
+    </div>
+
+    <div style="margin-top: 30px;">
+
+      <button class="secondary-button"
+              onclick="backToGoogleSheets()">
+        ← Back
+      </button>
+
+      <button class="primary-button"
+              onclick="saveTelegramConfiguration()">
+        Continue →
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- STEP 07: WORKFLOW REVIEW -->
+<section id="workflowReviewSetup" style="display: none;">
+
+  <div class="section-header">
+    <span class="step-label">STEP 07</span>
+    <h2>Review Your Workflow</h2>
+    <p>Check your configuration before generating your automation.</p>
+  </div>
+
+  <div class="review-card">
+
+    <h3>Workflow Details</h3>
+    <div id="reviewWorkflowDetails"></div>
+
+    <h3>Data Source</h3>
+    <div id="reviewDataSource"></div>
+
+    <h3>Data Fields</h3>
+    <div id="reviewDataFields"></div>
+
+    <h3>Destination</h3>
+    <div id="reviewDestination"></div>
+
+    <h3>Google Sheets</h3>
+    <div id="reviewGoogleSheets"></div>
+
+    <h3>Telegram Configuration</h3>
+    <div id="reviewTelegram"></div>
+
+  </div>
+
+  <div style="margin-top: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
+    <button class="secondary-button" onclick="backToTelegramConfiguration()">
+      ← Back
+    </button>
+
+    <button class="primary-button" onclick="openAutomationGeneration()">
+  Continue to Generation →
+</button>
+  </div>
+
+</section>
+<!-- STEP 08: AUTOMATION GENERATION -->
+<section id="automationGenerationSetup" style="display: none;">
+
+  <div class="topbar">
+    <div class="breadcrumb">
+      Workspace / Create Workflow / Automation Generation
+    </div>
+    <div class="status">● STEP 08</div>
+  </div>
+
+  <h1>Generate your automation.</h1>
+
+  <div class="description">
+    Your workflow configuration is ready. DataLink will prepare
+    an independent automation project in your Google account.
+  </div>
+
+  <div class="workflow-card">
+
+    <div class="section-title">08 — Automation generation</div>
+
+    <div class="workflow-description">
+      Review the generation details before creating your automation project.
+    </div>
+
+    <div id="generationWorkflowName"></div>
+    <div id="generationStatus" style="margin-top: 20px;">
+      Ready to generate.
+    </div>
+
+    <div id="generationFeedback"
+         style="display:none; margin-top:15px; color:var(--green);">
+    </div>
+
+    <div style="margin-top: 30px;">
+
+      <button class="secondary-button"
+              onclick="backToWorkflowReview()">
+        ← Back
+      </button>
+
+      <button class="primary-button"
+              onclick="generateAutomation()">
+        Generate Automation →
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+<div id="dashboardView">
+      <div class="topbar">
+        <div class="breadcrumb">Workspace / Dashboard</div>
+        <div class="status">● BUILDER PREVIEW</div>
+      </div>
+
+      <h1>Build smarter workflows.</h1>
+      <div class="description">
+        Connect your apps, organize your data, and automate repetitive processes.
+        <br>Everything starts with a workflow.
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <div class="stat-label">TOTAL WORKFLOWS</div>
+          <div class="stat-number">0</div>
+          <div class="stat-label">Your automation projects</div>
+        </div>
+
+        <div class="card">
+          <div class="stat-label">ACTIVE WORKFLOWS</div>
+          <div class="stat-number">0</div>
+          <div class="stat-label">Currently running</div>
+        </div>
+
+        <div class="card">
+          <div class="stat-label">RECORDS PROCESSED</div>
+          <div class="stat-number">0</div>
+          <div class="stat-label">Total data entries</div>
+        </div>
+      </div>
+
+      <div class="section-title">Create your automation</div>
+
+      <div class="workflow-card">
+        <div class="section-title">Start with a new workflow</div>
+
+        <div class="workflow-description">
+          Choose where your data comes from, define the information you want
+          to extract, and select where the results should be stored.
+        </div>
+
+        <div class="workflow-steps">
+          <div class="step">
+            <div class="step-icon">↗</div>
+            Data Source
+          </div>
+
+          <div class="arrow">→</div>
+
+          <div class="step">
+            <div class="step-icon">⌘</div>
+            Data Processing
+          </div>
+
+          <div class="arrow">→</div>
+
+          <div class="step">
+            <div class="step-icon">▤</div>
+            Destination
+          </div>
+        </div>
+
+        <button class="primary-button" onclick="createWorkflow()">
+          + Create New Workflow
+        </button>
+      </div>
+
+      <div class="section-title">Recent workflows</div>
+
+      <div class="workflow-card" id="recentWorkflows">
+        <div class="empty-state">
+          No workflows created yet. Your new automations will appear here.
+        </div>
+      </div>
+</div>
+    </main>
+  </div>
+
+  <script>
+  <?!= include('JavaScript'); ?>
+</script>
+
+</body>
+</html>

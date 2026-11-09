@@ -1,0 +1,536 @@
+
+:root {
+  --green: #00C853;
+  --green-hover: #00E05C;
+  --green-soft: rgba(0, 200, 83, 0.12);
+
+  --background: #080B09;
+  --sidebar: #0D110E;
+  --surface: #111713;
+  --surface-hover: #18211B;
+
+  --white: #FFFFFF;
+  --text-secondary: #A3ADA5;
+  --muted: #68736B;
+  --border: #222D25;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  background: var(--background);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 250px;
+  min-width: 250px;
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  padding: 30px 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 48px;
+  padding: 0 7px;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  background: var(--green);
+  color: #061109;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brand-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.brand-name span {
+  color: var(--green);
+}
+
+.brand-subtitle {
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+}
+
+.nav-label {
+  color: #657168;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  margin: 30px 10px 12px;
+}
+
+.nav-item {
+  padding: 13px 12px;
+  margin-bottom: 5px;
+  border-radius: 9px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.nav-item:hover {
+  background: var(--surface-hover);
+  color: var(--white);
+}
+
+.nav-item.active {
+  background: var(--green-soft);
+  color: var(--green);
+  font-weight: 650;
+}
+
+/* MAIN CONTENT */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 38px 48px;
+  max-width: 1550px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 55px;
+}
+
+.breadcrumb {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.status {
+  background: var(--green-soft);
+  color: var(--green);
+  border: 1px solid rgba(0, 200, 83, 0.2);
+  padding: 8px 13px;
+  border-radius: 30px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+h1 {
+  font-size: clamp(29px, 3vw, 38px);
+  font-weight: 750;
+  letter-spacing: -1.4px;
+  margin: 0 0 12px;
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* STATISTICS */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 38px 0 44px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  padding: 24px;
+  transition: 0.2s ease;
+}
+
+.card:hover {
+  border-color: #344638;
+  transform: translateY(-2px);
+}
+
+.stat-number {
+  font-size: 32px;
+  font-weight: 750;
+  letter-spacing: -1px;
+  margin: 15px 0 7px;
+  color: var(--green);
+  text-shadow: 0 0 18px rgba(0, 200, 83, 0.12);
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+}
+
+/* WORKFLOW SECTIONS */
+
+.section-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin-bottom: 18px;
+}
+
+.workflow-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 27px;
+  margin-bottom: 35px;
+  transition: border-color 0.2s ease;
+}
+
+.workflow-card:hover {
+  border-color: #344638;
+}
+
+.workflow-description {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.8;
+  margin: 10px 0 25px;
+}
+
+/* WORKFLOW STEPS */
+
+.workflow-steps {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.step {
+  background: #171F19;
+  border: 1px solid #29362D;
+  border-radius: 12px;
+  padding: 17px 23px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.step-icon {
+  color: var(--green);
+  font-size: 21px;
+  margin-bottom: 9px;
+}
+
+.arrow {
+  color: var(--green);
+  font-size: 19px;
+}
+
+/* BUTTONS */
+
+.primary-button {
+  background: var(--green);
+  color: #061109;
+  border: none;
+  padding: 14px 22px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.primary-button:hover {
+  background: var(--green-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 20px rgba(0, 200, 83, 0.15);
+}
+
+.secondary-button {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--white);
+  padding: 12px 18px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+/* WORKFLOW LIST */
+
+.workflow-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+
+.workflow-row:last-child {
+  border-bottom: none;
+}
+
+.workflow-name {
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.workflow-meta {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+.empty-state {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 12px 0;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 210px;
+    min-width: 210px;
+  }
+
+  .main {
+    padding: 30px 25px;
+  }
+}
+
+@media (max-width: 700px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main {
+    padding: 25px 18px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    margin-bottom: 35px;
+  }
+
+  .workflow-card {
+    padding: 20px;
+  }
+
+  .workflow-steps {
+    gap: 9px;
+  }
+}
+
+/* =================================
+   DATALINK — MODERN FORM CONTROLS
+================================= */
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  box-sizing: border-box;
+  background: #0D1510;
+  color: #FFFFFF;
+  border: 1px solid #293B2F;
+  border-radius: 10px;
+  padding: 12px 15px;
+  min-height: 44px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+/* Input dimensions */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea {
+  width: 100%;
+  max-width: 360px;
+}
+
+select {
+  min-width: 120px;
+  cursor: pointer;
+  color-scheme: dark;
+}
+
+/* Placeholder */
+input::placeholder,
+textarea::placeholder {
+  color: #68736B;
+}
+
+/* Hover — subtle green edge lighting */
+input[type="text"]:hover,
+input[type="number"]:hover,
+input[type="date"]:hover,
+select:hover,
+textarea:hover {
+  border-color: #00C853;
+  box-shadow: 0 0 8px rgba(0, 200, 83, 0.15);
+}
+
+/* Focus — stronger green glow */
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #00E05C;
+  box-shadow:
+    0 0 0 2px rgba(0, 224, 92, 0.12),
+    0 0 14px rgba(0, 224, 92, 0.20);
+  background: #101B13;
+}
+
+/* Dropdown options */
+select option {
+  background: #111713;
+  color: #FFFFFF;
+}
+
+/* Disabled controls */
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Workflow Details — aligned form controls */
+
+#workflowBuilder label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+#workflowBuilder #workflowName,
+#workflowBuilder #workflowDescription {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 0 22px 0;
+  box-sizing: border-box;
+  vertical-align: top;
+}
+
+#workflowBuilder #workflowDescription {
+  min-height: 100px;
+  resize: vertical;
+}
+
+
+/* TELEGRAM — PASSWORD INPUT */
+
+input[type="password"] {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  min-height: 44px;
+  padding: 12px 15px;
+  background: #0D1510;
+  color: #FFFFFF;
+  border: 1px solid #293B2F;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+input[type="password"]::placeholder {
+  color: #68736B;
+}
+
+input[type="password"]:hover {
+  border-color: #00C853;
+  box-shadow: 0 0 8px rgba(0, 200, 83, 0.15);
+}
+
+input[type="password"]:focus {
+  border-color: #00E05C;
+  box-shadow:
+    0 0 0 2px rgba(0, 224, 92, 0.12),
+    0 0 14px rgba(0, 224, 92, 0.20);
+  background: #101B13;
+}
+
+/* STEP 06 — TELEGRAM FORM ALIGNMENT */
+
+#telegramConfigSetup label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+#telegramConfigSetup input[type="password"],
+#telegramConfigSetup textarea {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+#telegramConfigSetup small {
+  display: block;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+#telegramConfigSetup textarea {
+  margin-top: 8px;
+}
+
+#telegramConfigSetup .secondary-button,
+#telegramConfigSetup .primary-button {
+  margin-top: 24px;
+}

@@ -1,0 +1,443 @@
+/**
+ * JORDS DATALINK
+ * Workflow Builder navigation and interaction
+ */
+
+// Temporary workflow draft for the current browser session.
+let currentWorkflowDraft = null;
+
+
+/**
+ * Opens the Workflow Builder.
+ */
+function createWorkflow() {
+  document.getElementById('dashboardView').style.display = 'none';
+  document.getElementById('workflowBuilder').style.display = 'block';
+}
+
+
+/**
+ * Returns to the Dashboard.
+ */
+function backToDashboard() {
+  document.getElementById('workflowBuilder').style.display = 'none';
+  document.getElementById('dashboardView').style.display = 'block';
+}
+
+
+/**
+ * Validates and captures workflow details.
+ */
+function continueWorkflow() {
+  const name = document.getElementById('workflowName').value.trim();
+  const description = document.getElementById('workflowDescription').value.trim();
+
+  if (!name) {
+    alert('Please enter a workflow name.');
+    document.getElementById('workflowName').focus();
+    return;
+  }
+
+  currentWorkflowDraft = {
+    name: name,
+    description: description,
+    source: '',
+    status: 'DRAFT'
+  };
+
+  document.getElementById('workflowBuilder').style.display = 'none';
+  document.getElementById('dataSourceSetup').style.display = 'block';
+}
+
+/**
+ * Returns to Workflow Details.
+ */
+function backToWorkflowDetails() {
+  document.getElementById('dataSourceSetup').style.display = 'none';
+  document.getElementById('workflowBuilder').style.display = 'block';
+}
+
+/**
+ * Captures the selected source and opens Data Fields.
+ */
+function continueToDataFields() {
+  const selectedSource = document.querySelector(
+    'input[name="dataSource"]:checked'
+  );
+
+  if (!selectedSource) {
+    alert('Please select a data source.');
+    return;
+  }
+
+  currentWorkflowDraft.source = selectedSource.value;
+
+  document.getElementById('dataSourceSetup').style.display = 'none';
+  document.getElementById('dataFieldsSetup').style.display = 'block';
+}
+
+/**
+ * Returns to Data Source selection.
+ */
+function backToDataSource() {
+  document.getElementById('dataFieldsSetup').style.display = 'none';
+  document.getElementById('dataSourceSetup').style.display = 'block';
+}
+
+/**
+ * Adds a data field to the current workflow.
+ */
+function addDataField() {
+  const fieldName = document.getElementById('fieldName').value.trim();
+  const fieldType = document.getElementById('fieldType').value;
+
+  if (!fieldName) {
+    alert('Please enter a field name.');
+    document.getElementById('fieldName').focus();
+    return;
+  }
+
+  if (!currentWorkflowDraft.fields) {
+    currentWorkflowDraft.fields = [];
+  }
+
+  currentWorkflowDraft.fields.push({
+    name: fieldName,
+    type: fieldType
+  });
+
+  renderDataFields();
+
+  document.getElementById('fieldName').value = '';
+}
+
+/**
+ * Displays the configured data fields.
+ */
+function renderDataFields() {
+  const container = document.getElementById('dataFieldsList');
+
+  if (!currentWorkflowDraft.fields.length) {
+    container.innerHTML =
+      '<div class="empty-state">No data fields added yet.</div>';
+    return;
+  }
+
+  container.innerHTML = currentWorkflowDraft.fields.map(function(field, index) {
+    return `
+      <div class="field-row" style="padding: 15px 0; border-bottom: 1px solid var(--border);">
+
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <strong>${index + 1}. ${field.name}</strong>
+
+          <span style="color: var(--text-secondary);">
+            ${field.type}
+          </span>
+
+          <button class="secondary-button"
+            onclick="editDataField(${index})">
+            Edit
+          </button>
+        </div>
+
+        <div id="editField-${index}" style="display: none; margin-top: 15px;">
+
+          <label>Field name</label>
+          <input type="text" id="editName-${index}">
+
+          <label>Data type</label>
+          <select id="editType-${index}">
+            <option value="TEXT">Text</option>
+            <option value="NUMBER">Number</option>
+            <option value="DATE">Date</option>
+          </select>
+
+          <div style="margin-top: 15px;">
+            <button class="primary-button"
+              onclick="saveDataField(${index})">
+              Save Changes
+            </button>
+
+            <button class="secondary-button"
+              onclick="cancelEditDataField(${index})">
+              Cancel
+            </button>
+          </div>
+
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function editDataField(index) {
+  const field = currentWorkflowDraft.fields[index];
+
+  document.getElementById('editName-' + index).value = field.name;
+  document.getElementById('editType-' + index).value = field.type;
+
+  document.getElementById('editField-' + index).style.display = 'block';
+}
+
+function saveDataField(index) {
+  const name = document.getElementById('editName-' + index).value.trim();
+  const type = document.getElementById('editType-' + index).value;
+
+  if (!name) {
+    alert('Field name cannot be empty.');
+    return;
+  }
+
+  currentWorkflowDraft.fields[index] = {
+    name: name,
+    type: type
+  };
+
+  renderDataFields();
+}
+
+function cancelEditDataField(index) {
+  document.getElementById('editField-' + index).style.display = 'none';
+}
+
+/**
+ * Validates data fields and proceeds to Destination.
+ */
+function continueToDestination() {
+  if (!currentWorkflowDraft.fields ||
+      currentWorkflowDraft.fields.length === 0) {
+    alert('Please add at least one data field.');
+    return;
+  }
+
+  document.getElementById('dataFieldsSetup').style.display = 'none';
+  document.getElementById('destinationSetup').style.display = 'block';
+}
+
+/**
+ * Returns to Data Fields.
+ */
+function backToDataFields() {
+  document.getElementById('destinationSetup').style.display = 'none';
+  document.getElementById('dataFieldsSetup').style.display = 'block';
+}
+
+ /**
+ * Captures the selected destination and opens its setup screen.
+ */
+function continueFromDestination() {
+  const selectedDestination = document.querySelector(
+    'input[name="dataDestination"]:checked'
+  );
+
+  if (!selectedDestination) {
+    return;
+  }
+
+  currentWorkflowDraft.destination = selectedDestination.value;
+
+  if (selectedDestination.value === 'GOOGLE_SHEETS') {
+    document.getElementById('destinationSetup').style.display = 'none';
+    document.getElementById('googleSheetsSetup').style.display = 'block';
+  }
+}
+
+/**
+ * Returns to destination selection.
+ */
+function backToDestination() {
+  document.getElementById('googleSheetsSetup').style.display = 'none';
+  document.getElementById('destinationSetup').style.display = 'block';
+}
+
+
+function createGoogleSpreadsheet() {
+  const spreadsheetName = document
+    .getElementById('spreadsheetName')
+    .value.trim();
+
+  const feedback = document.getElementById('googleSheetsFeedback');
+
+  if (!spreadsheetName) {
+    feedback.textContent = 'Please enter a spreadsheet name.';
+    feedback.style.display = 'block';
+    return;
+  }
+
+  if (!currentWorkflowDraft.fields ||
+      currentWorkflowDraft.fields.length === 0) {
+    feedback.textContent = 'No data fields found in this workflow.';
+    feedback.style.display = 'block';
+    return;
+  }
+
+  feedback.textContent = 'Creating your spreadsheet...';
+  feedback.style.display = 'block';
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      currentWorkflowDraft.spreadsheet = result;
+      document.getElementById('continueToTelegramButton').style.display = 'inline-block';
+      feedback.textContent = 'Spreadsheet created successfully.';
+
+      const link = document.createElement('a');
+      link.href = result.spreadsheetUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = 'Open Google Sheets';
+      link.style.color = 'var(--green)';
+      link.style.display = 'block';
+      link.style.marginTop = '10px';
+
+      feedback.appendChild(link);
+    })
+    .withFailureHandler(function(error) {
+      feedback.textContent =
+        'Unable to create spreadsheet: ' + error.message;
+    })
+    .createWorkflowSpreadsheet(
+      spreadsheetName,
+      currentWorkflowDraft.fields
+    );
+}
+
+
+function openTelegramConfiguration() {
+  document.getElementById('googleSheetsSetup').style.display = 'none';
+  document.getElementById('telegramConfigSetup').style.display = 'block';
+}
+
+function backToGoogleSheets() {
+  document.getElementById('telegramConfigSetup').style.display = 'none';
+  document.getElementById('googleSheetsSetup').style.display = 'block';
+}
+
+function saveTelegramConfiguration() {
+  const password = document
+    .getElementById('telegramAccessPassword')
+    .value.trim();
+
+  const welcomeMessage = document
+    .getElementById('telegramWelcomeMessage')
+    .value.trim();
+
+  const feedback = document.getElementById('telegramConfigFeedback');
+
+  if (!(password.length >= 8)) {
+    feedback.textContent = 'Password must contain at least 8 characters.';
+    feedback.style.display = 'block';
+    return;
+  }
+
+  currentWorkflowDraft.telegram = {
+    accessPassword: password,
+    welcomeMessage: welcomeMessage || 'Welcome! Please send your record.'
+  };
+
+  renderWorkflowReview();
+
+document.getElementById('telegramConfigSetup').style.display = 'none';
+document.getElementById('workflowReviewSetup').style.display = 'block';
+}
+
+function renderWorkflowReview() {
+  const workflow = currentWorkflowDraft;
+
+  // Workflow Details
+  document.getElementById('reviewWorkflowDetails').textContent =
+    workflow.name + ' — ' + (workflow.description || 'No description');
+
+  // Data Source
+  document.getElementById('reviewDataSource').textContent =
+    workflow.source || 'Not configured';
+
+  // Data Fields
+  const fieldsContainer = document.getElementById('reviewDataFields');
+  fieldsContainer.textContent = '';
+
+  (workflow.fields || []).forEach(function(field) {
+    const item = document.createElement('div');
+    item.textContent = field.name + ' (' + field.type + ')';
+    fieldsContainer.appendChild(item);
+  });
+
+  // Destination
+  document.getElementById('reviewDestination').textContent =
+    workflow.destination || 'Not configured';
+
+  // Google Sheets
+  const sheetsContainer = document.getElementById('reviewGoogleSheets');
+  sheetsContainer.textContent = '';
+
+  if (workflow.spreadsheet) {
+    const name = document.createElement('div');
+    name.textContent = workflow.spreadsheet.spreadsheetName;
+    sheetsContainer.appendChild(name);
+
+    const link = document.createElement('a');
+    link.href = workflow.spreadsheet.spreadsheetUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Open Google Sheets';
+    sheetsContainer.appendChild(link);
+  } else {
+    sheetsContainer.textContent = 'Not configured';
+  }
+
+  // Telegram Configuration
+  document.getElementById('reviewTelegram').textContent =
+    'Welcome message: ' +
+    (workflow.telegram.welcomeMessage || 'Default welcome message') +
+    ' | Shared password: Configured';
+}
+
+function backToTelegramConfiguration() {
+  document.getElementById('workflowReviewSetup').style.display = 'none';
+  document.getElementById('telegramConfigSetup').style.display = 'block';
+}
+
+function openAutomationGeneration() {
+  const workflow = currentWorkflowDraft;
+
+  document.getElementById('generationWorkflowName').textContent =
+    'Workflow: ' + workflow.name;
+
+  document.getElementById('generationStatus').textContent =
+    'Ready to generate your automation project.';
+
+  document.getElementById('workflowReviewSetup').style.display = 'none';
+  document.getElementById('automationGenerationSetup').style.display = 'block';
+}
+
+function backToWorkflowReview() {
+  document.getElementById('automationGenerationSetup').style.display = 'none';
+  document.getElementById('workflowReviewSetup').style.display = 'block';
+}
+
+/**
+ * Runs the automation generation readiness check.
+ */
+function generateAutomation() {
+  const workflow = currentWorkflowDraft;
+  const status = document.getElementById('generationStatus');
+  const feedback = document.getElementById('generationFeedback');
+
+  feedback.style.display = 'none';
+  status.textContent = 'Checking workflow configuration...';
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      status.textContent = 'Preflight check completed.';
+
+      feedback.textContent = result.message;
+      feedback.style.display = 'block';
+    })
+    .withFailureHandler(function(error) {
+      status.textContent = 'Generation preparation failed.';
+
+      feedback.textContent = error.message ||
+        'Unable to validate the workflow.';
+      feedback.style.display = 'block';
+    })
+    .prepareAutomationGeneration(workflow);
+}
